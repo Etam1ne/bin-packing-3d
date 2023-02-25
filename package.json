@@ -1,0 +1,12 @@
+{
+  "name": "3dbinpacking",
+  "version": "1.0.0",
+  "description": "javascript solution for 3D bin packing problem",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "etamine",
+  "type": "module",
+  "license": "ISC"
+}
