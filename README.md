@@ -6,7 +6,7 @@ JavaScript solution for 3D bin packing problem.
 ## Install
 
 ```
-npm i 3d-bin-pack
+npm i bin-packing-3d
 ```
 
 ## Basics
@@ -51,7 +51,7 @@ my_bin.unfitted_items       # Get all unfitted items in each bin
 ## Example
 
 ```
-const { Bin, Item, Packer} = require('3d-bin-pack');
+const { Bin, Item, Packer} = require('bin-packing-3d');
 
 let packer = new Packer();
 

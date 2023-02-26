@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "Solution for 3D bin packing problem",
   "keywords": ["bin", "packing", "bin packing", "3D"],
-  "homepage": "https://github.com/Etam1ne/3d-bin-pack.git",
+  "homepage": "https://github.com/Etam1ne/bin-packing-3d#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Etam1ne/3d-bin-pack.git"
+    "url": "https://github.com/Etam1ne/bin-packing-3d.git"
   },
   "bugs": { 
-    "url" : "https://github.com/Etam1ne/3d-bin-pack/issues"
+    "url" : "https://github.com/Etam1ne/bin-packing-3d/issues"
   },
   "main": "index.js",
   "author": "etamine",
