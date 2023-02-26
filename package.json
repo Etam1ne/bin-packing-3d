@@ -1,5 +1,5 @@
 {
-  "name": "3d-bin-pack",
+  "name": "bin-packing-3d",
   "version": "1.0.0",
   "description": "Solution for 3D bin packing problem",
   "keywords": ["bin", "packing", "bin packing", "3D"],
