@@ -1,42 +1,51 @@
-import { Axis, RotationType } from './constants.cjs';
+const rotationType = {
+    RT_WHD: 0,
+    RT_HWD: 1,
+    RT_HDW: 2,
+    RT_DHW: 3,
+    RT_DWH: 4,
+    RT_WDH: 5,
+}
+rotationType.ALL = [
+    rotationType.RT_WHD, 
+    rotationType.RT_HWD, 
+    rotationType.RT_HDW, 
+    rotationType.RT_DHW, 
+    rotationType.RT_DWH, 
+    rotationType.RT_WDH
+]
 
-const axis = new Axis();
-const rotationType = new RotationType();
+const axis = {
+    WIDTH: 0,
+    HEIGHT: 1,
+    DEPTH: 2,
 
-const DEFAULT_NUMBER_OF_DECIMALS = 3;
+}
+axis.ALL = [axis.WIDTH, axis.HEIGHT, axis.DEPTH]
+
 const START_POSITION = [0, 0, 0];
 
-const rect_intersect = (item1, item2, x, y) => {
-    d1 = item1.get_dimension()
-    d2 = item2.get_dimension()
+function rect_intersect(item1, item2, x, y) {
+    let d1 = item1.get_dimension()
+    let d2 = item2.get_dimension()
 
-    cx1 = item1.position[x] + d1[x]/2
-    cy1 = item1.position[y] + d1[y]/2
-    cx2 = item2.position[x] + d2[x]/2
-    cy2 = item2.position[y] + d2[y]/2
+    let cx1 = item1.position[x] + d1[x]/2
+    let cy1 = item1.position[y] + d1[y]/2
+    let cx2 = item2.position[x] + d2[x]/2
+    let cy2 = item2.position[y] + d2[y]/2
 
-    ix = Math.max(cx1, cx2) - Math.min(cx1, cx2)
-    iy = Math.max(cy1, cy2) - Math.min(cy1, cy2)
+    let ix = Math.max(cx1, cx2) - Math.min(cx1, cx2)
+    let iy = Math.max(cy1, cy2) - Math.min(cy1, cy2)
 
     return ix < (d1[x]+d2[x])/2 && iy < (d1[y]+d2[y])/2
 }
 
-const intersect = (item1, item2) => {
+function intersect(item1, item2) {
     return (
         rect_intersect(item1, item2, axis.WIDTH, axis.HEIGHT) &&
         rect_intersect(item1, item2, axis.HEIGHT, axis.DEPTH) &&
         rect_intersect(item1, item2, axis.WIDTH, axis.DEPTH)
     )
-}
-
-const get_limit_number_of_decimals = (number_of_decimals) => {
-    return parseFloat(1).toFixed(number_of_decimals)
-}
-
-const set_to_decimal = (value, number_of_decimals) => {
-    number_of_decimals = get_limit_number_of_decimals(number_of_decimals)
-
-    return parseFloat(value).toFixed(number_of_decimals)
 }
 
 class Item {
@@ -47,7 +56,6 @@ class Item {
     weight;
     rotation_type;
     position;
-    number_of_decimals;
     constructor(name, width, height, depth, weight) {
         this.name = name;
         this.width = width;
@@ -56,51 +64,34 @@ class Item {
         this.weight = weight;
         this.rotation_type = 0;
         this.position = START_POSITION;
-        this.number_of_decimals = DEFAULT_NUMBER_OF_DECIMALS;
-    }
-
-    format_numbers(number_of_decimals) {
-        this.width = set_to_decimal(this.width, number_of_decimals)
-        this.height = set_to_decimal(this.height, number_of_decimals)
-        this.depth = set_to_decimal(this.depth, number_of_decimals)
-        this.weight = set_to_decimal(this.weight, number_of_decimals)
-        this.number_of_decimals = this.number_of_decimals
-    }
-
-    string() {
-        return "%s(%sx%sx%s, weight: %s) pos(%s) rt(%s) vol(%s)" % (
-            this.name, this.width, this.height, this.depth, this.weight,
-            this.position, this.rotation_type, this.get_volume()
-        )
     }
 
     get_volume() {
-        return set_to_decimal(
-            this.width * this.height * this.depth, this.number_of_decimals
-        )
+        return this.width * this.height * this.depth
     }
 
     get_dimension() {
-        if (this.rotation_type == rotationType.RT_WHD) {
-            return [this.width, this.height, this.depth]
-        }
-        else if (this.rotation_type == rotationType.RT_HWD) {
-            return [this.height, this.width, this.depth]
-        }
-        else if (this.rotation_type == rotationType.RT_HDW) {
-            return [this.height, this.depth, this.width]
-        }
-        else if (this.rotation_type == rotationType.RT_DHW) {
-            return [this.depth, this.height, this.width]
-        }
-        else if (this.rotation_type == rotationType.RT_DWH) {
-            return [this.depth, this.width, this.height]
-        }
-        else if (this.rotation_type == rotationType.RT_WDH) {
-            return [this.width, this.depth, this.height]
-        }
-        else {
-            return []
+        switch (this.rotation_type) {
+            case rotationType.RT_WHD:
+                return [this.width, this.height, this.depth]
+            
+            case rotationType.RT_HWD:
+                return [this.height, this.width, this.depth]
+            
+            case rotationType.RT_HDW:
+                return [this.height, this.depth, this.width]
+
+            case rotationType.RT_DHW:
+                return [this.depth, this.height, this.width]
+            
+            case rotationType.RT_DWH:
+                return [this.depth, this.width, this.height]
+            
+            case rotationType.RT_WDH:
+                return [this.width, this.depth, this.height]
+            
+            default:
+                return []
         }
     }
 }
@@ -119,38 +110,20 @@ class Bin {
         this.max_weight = max_weight
         this.items = []
         this.unfitted_items = []
-        this.number_of_decimals = DEFAULT_NUMBER_OF_DECIMALS
-    }
-
-    format_numbers(number_of_decimals) {
-        this.width = set_to_decimal(this.width, number_of_decimals)
-        this.height = set_to_decimal(this.height, number_of_decimals)
-        this.depth = set_to_decimal(this.depth, number_of_decimals)
-        this.max_weight = set_to_decimal(this.max_weight, number_of_decimals)
-        this.number_of_decimals = number_of_decimals
-    }
-
-    string() {
-        return "%s(%sx%sx%s, max_weight:%s) vol(%s)" % (
-            this.name, this.width, this.height, this.depth, this.max_weight,
-            this.get_volume()
-        )
     }
 
     get_volume() {
-        return set_to_decimal(
-            this.width * this.height * this.depth, this.number_of_decimals
-        )
+        return this.width * this.height * this.depth
     }
 
     get_total_weight() {
-        total_weight = 0
+        let total_weight = 0
 
         for (let i = 0; i < this.items.length; i++) {
-            total_weight += items[i].weight
+            total_weight += this.items[i].weight
         }
 
-        return set_to_decimal(total_weight, this.number_of_decimals)
+        return total_weight
     }
 
     put_item(item, pivot) {
@@ -159,8 +132,8 @@ class Bin {
         item.position = pivot
 
         for (let i = 0; i < rotationType.ALL.length; i++) {
-            item.rotation_type = rotationType.All[i]
-            dimension = item.get_dimension()
+            item.rotation_type = rotationType.ALL[i]
+            let dimension = item.get_dimension()
 
             if (
                 this.width < pivot[0] + dimension[0] ||
@@ -226,7 +199,7 @@ class Packer {
     pack_to_bin(bin, item) {
         let fitted = false
 
-        if (!bin.items) {
+        if (bin.items.length === 0) {
             let response = bin.put_item(item, START_POSITION)
 
             if (!response) {
@@ -241,28 +214,33 @@ class Packer {
 
             for (let j = 0; j < items_in_bin.length; j++) {
                 let pivot = [0, 0, 0]
-                let w, h, d = items_in_bin[j].get_dimension()
+                let [ w, h, d ] = items_in_bin[j].get_dimension()
+                let addToPivot;
                 if (i == axis.WIDTH) {
+                    addToPivot = w + items_in_bin[j].position[0]
                     pivot = [
-                        ib.position[0] + w,
-                        ib.position[1],
-                        ib.position[2]
+                        addToPivot,
+                        items_in_bin[j].position[1],
+                        items_in_bin[j].position[2]
                     ]
                 }
                 else if (i == axis.HEIGHT) {
+                    addToPivot = items_in_bin[j].position[1] + h
                     pivot = [
-                        ib.position[0],
-                        ib.position[1] + h,
-                        ib.position[2]
+                        items_in_bin[j].position[0],
+                        addToPivot,
+                        items_in_bin[j].position[2]
                     ]
                 }
                 else if (i == axis.DEPTH) {
+                    addToPivot = items_in_bin[j].position[2] + d
                     pivot = [
-                        ib.position[0],
-                        ib.position[1],
-                        ib.position[2] + d
+                        items_in_bin[j].position[0],
+                        items_in_bin[j].position[1],
+                        addToPivot
                     ]
                 }
+
                 if (bin.put_item(item, pivot)) {
                     fitted = true
                     break
@@ -270,20 +248,14 @@ class Packer {
             }
             if (fitted) break
         }
-        if (!fitted) bin.unfitted_items.push(item)
+        if (fitted === false) {
+            bin.unfitted_items.push(item)
+        }
     }
 
     pack(
-        bigger_first=false, distribute_items=false,
-        number_of_decimals=DEFAULT_NUMBER_OF_DECIMALS
+        bigger_first=false, distribute_items=false
     ) {
-        for (let i = 0; i < this.bins.length; i++) {
-            this.bins[i].format_numbers(number_of_decimals)
-        }
-        for (let i = 0; i < this.items.length; i++) {
-            this.items[i].format_numbers(number_of_decimals)
-        }
-
         this.bins.sort((a, b) => {
             if (!bigger_first) {
                 return a.get_volume() - b.get_volume();
@@ -302,14 +274,20 @@ class Packer {
         })
 
         for (let i = 0; i < this.bins.length; i++) {
-            for (let j = 0; j < this.bins[i].length; j++) {
-                this.pack_to_bin(this.bins[i], this.bins[i][j])
+            for (let j = 0; j < this.items.length; j++) {
+                this.pack_to_bin(this.bins[i], this.items[j])
             }
             if (distribute_items) {
-                for (let k = 0; k < this.bins[i].length; k++) {
-                    this.items.splice(k, 1)
+                for (let k = 0; k < this.bins[i].items.length; k++) {
+                    this.items.slice(k, 1)
                 }
             }
         }
     }
+}
+
+module.exports = {
+    Bin,
+    Item,
+    Packer
 }

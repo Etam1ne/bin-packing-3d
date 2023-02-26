@@ -1,12 +1,17 @@
 {
-  "name": "3dbinpacking",
+  "name": "3d-bin-pack",
   "version": "1.0.0",
-  "description": "javascript solution for 3D bin packing problem",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "Solution for 3D bin packing problem",
+  "keywords": ["bin", "packing", "bin packing", "3D"],
+  "homepage": "https://github.com/Etam1ne/3d-bin-pack.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Etam1ne/3d-bin-pack.git"
   },
+  "bugs": { 
+    "url" : "https://github.com/Etam1ne/3d-bin-pack/issues"
+  },
+  "main": "index.js",
   "author": "etamine",
-  "type": "module",
   "license": "ISC"
 }
