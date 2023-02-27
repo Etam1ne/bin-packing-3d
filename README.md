@@ -43,9 +43,9 @@ packer.pack();               // Packing items to bins
 
 **After packing:**
 ```
-packer.bins                 # Get all bins of packer
-my_bin.items                # Get all fitted items in each bin
-my_bin.unfitted_items       # Get all unfitted items in each bin
+packer.bins                  // Get all bins of packer
+my_bin.items                 // Get all fitted items in each bin
+my_bin.unfitted_items        // Get all unfitted items in each bin
 ```
 
 ## Example
